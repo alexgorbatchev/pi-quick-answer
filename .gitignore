@@ -4,6 +4,7 @@ node_modules/
 .codegraph
 .pi-subagents
 .pi/agent
+progress.md
 *.tgz
 *.sqlite-wal
 *.sqlite-shm

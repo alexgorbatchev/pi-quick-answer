@@ -270,7 +270,7 @@ export function fallbackRegexExtract(text: string): string[] {
   return Array.from(new Set(items));
 }
 
-function parseModelOutput(rawText: string): string[] {
+export function parseModelOutput(rawText: string): string[] {
   const cleaned = rawText
     .replace(/^```(?:json)?\s*/i, "")
     .replace(/```\s*$/i, "")
@@ -282,7 +282,17 @@ function parseModelOutput(rawText: string): string[] {
       return parsed.map((item) => item.trim()).filter((item) => item.length > 0);
     }
   } catch {
-    // If parsing fails, return empty to trigger fallback
+    const arrayMatch = cleaned.match(/\[[\s\S]*\]/);
+    if (arrayMatch?.[0]) {
+      try {
+        const parsed: unknown = JSON.parse(arrayMatch[0]);
+        if (isStringArray(parsed)) {
+          return parsed.map((item) => item.trim()).filter((item) => item.length > 0);
+        }
+      } catch {
+        // Fall through to empty array
+      }
+    }
   }
 
   return [];

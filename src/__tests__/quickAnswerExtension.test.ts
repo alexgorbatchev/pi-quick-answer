@@ -10,6 +10,7 @@ import quickAnswerExtension, {
   formatConfigReport,
   type IThemeFormatter,
   matchesModelPattern,
+  parseModelOutput,
   parseQuickAnswerConfig,
   selectModel,
 } from "../quickAnswerExtension.js";
@@ -106,6 +107,28 @@ describe("fallbackRegexExtract", () => {
     const extracted = fallbackRegexExtract(text);
 
     expect(extracted).toEqual([]);
+  });
+});
+
+describe("parseModelOutput", () => {
+  it("parses clean JSON array string", () => {
+    const output = '["Question 1?", "Option 2: Redis cache"]';
+    expect(parseModelOutput(output)).toEqual(["Question 1?", "Option 2: Redis cache"]);
+  });
+
+  it("parses JSON array wrapped in markdown code fence", () => {
+    const output = '```json\n["Question 1?", "Option 2: Redis cache"]\n```';
+    expect(parseModelOutput(output)).toEqual(["Question 1?", "Option 2: Redis cache"]);
+  });
+
+  it("parses JSON array embedded in commentary text", () => {
+    const output = 'Here are the extracted questions:\n["Question 1?", "Option 2: Redis cache"]\nHope this helps!';
+    expect(parseModelOutput(output)).toEqual(["Question 1?", "Option 2: Redis cache"]);
+  });
+
+  it("returns empty array for invalid or non-array output", () => {
+    expect(parseModelOutput("No questions found")).toEqual([]);
+    expect(parseModelOutput('{"question": "Not an array"}')).toEqual([]);
   });
 });
 
