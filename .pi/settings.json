@@ -1,0 +1,5 @@
+{
+  "@alexgorbatchev/pi-quick-answer": {
+    "models": ["litellm/*"]
+  }
+}

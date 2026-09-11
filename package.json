@@ -1,0 +1,58 @@
+{
+  "name": "@alexgorbatchev/pi-quick-answer",
+  "version": "1.0.0",
+  "description": "Pi extension to quickly extract questions, options, and decisions from the assistant's last response for prompt answering",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "quick-answer",
+    "interactive"
+  ],
+  "homepage": "https://github.com/alexgorbatchev/pi-quick-answer#readme",
+  "bugs": {
+    "url": "https://github.com/alexgorbatchev/pi-quick-answer/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexgorbatchev/pi-quick-answer.git"
+  },
+  "license": "MIT",
+  "author": "Alex Gorbatchev",
+  "type": "module",
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "check": "bun --bun oxfmt --check . && bun --bun oxlint . && tsc --noEmit",
+    "fix": "bun --bun oxfmt --write .",
+    "test": "bun test && PI_OFFLINE=1 bun x pi --no-extensions -e ./src/index.ts --list-models > /dev/null 2>&1",
+    "test:local": "bun x pi -e ./src/index.ts \"Provide a 2-paragraph technical explanation of why we isolate Docker networks in Coolify and how multi-network containers can cause Traefik gateway timeouts. At the end of your response, present 3 concrete solutions and questions to me.\""
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  },
+  "devDependencies": {
+    "@alexgorbatchev/typescript-ai-policy": "^13.0.0",
+    "@earendil-works/pi-ai": "^0.85.1",
+    "@earendil-works/pi-coding-agent": "^0.85.1",
+    "@earendil-works/pi-tui": "^0.85.1",
+    "@types/bun": "^1.4.2",
+    "@types/node": "^22.20.2",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "oxfmt": "^0.67.0",
+    "oxlint": "^1.82.0",
+    "typescript": "^6.0.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  }
+}
