@@ -1,5 +1,5 @@
 {
   "@alexgorbatchev/pi-quick-answer": {
-    "models": ["litellm/*"]
+    "models": ["litellm/gemini-2.5-flash"]
   }
 }

@@ -4,7 +4,7 @@ A Pi extension that extracts open questions, options, and decisions from the ass
 
 ## Workflow
 
-1. Run `/quick-answer` or `/q`.
+1. Run `/quick-answer`.
 2. The extension extracts questions and options from the last assistant turn using a fast model (or regex heuristic). Extraction results are cached per turn for instant repeat invocations.
 3. If multiple questions/options exist, select one using the inline interactive picker (`ctx.ui.select`).
 4. Enter your answer in the prefilled modal editor dialog (`[Selected Question] -> `).
@@ -31,7 +31,7 @@ You can optionally configure preferred extraction models and custom system promp
 ```json
 {
   "@alexgorbatchev/pi-quick-answer": {
-    "models": ["litellm/gemini-2.5-flash", "openai/gpt-4o-mini"],
+    "models": ["google/gemini-2.5-flash", "openai/gpt-4o-mini"],
     "systemPrompt": "Custom extraction prompt..."
   }
 }
@@ -39,7 +39,7 @@ You can optionally configure preferred extraction models and custom system promp
 
 ### Options
 
-- `models` (`string[]` or `string`): Preferred model identifier(s) or wildcard patterns (e.g. `"litellm/*"`, `"openai/gpt-4o-mini"`, `"flash"`). Evaluated in order against available models. If omitted, defaults to fast LiteLLM models (`flash`, `mini`, `haiku`) or the current active model.
+- `models` (`string[]` or `string`): Preferred model identifier(s) or wildcard patterns (e.g. `"google/gemini-2.5-flash"`, `"openai/gpt-4o-mini"`, `"flash"`). Evaluated in order against available models. If omitted, defaults to fast models (`flash`, `mini`, `haiku`) or the current active model.
 - `systemPrompt` (`string`): Overrides the default extraction prompt.
 
 ### Startup Summary
@@ -48,7 +48,7 @@ On startup, the extension reports the resolved model and the prompt source:
 
 ```
 [@alexgorbatchev/pi-quick-answer]
-  model: litellm/gemini-2.5-flash
+  model: google/gemini-2.5-flash
   prompt: default
 ```
 
@@ -56,7 +56,7 @@ Or if a custom prompt is configured:
 
 ```
 [@alexgorbatchev/pi-quick-answer]
-  model: litellm/gemini-2.5-flash
+  model: google/gemini-2.5-flash
   prompt: project settings
 ```
 

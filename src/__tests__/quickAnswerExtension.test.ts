@@ -25,10 +25,10 @@ const mockTheme: IThemeFormatter = {
 
 const mockModelFlash: Model<Api> = {
   id: "gemini-2.5-flash",
-  provider: "litellm",
+  provider: "google",
   name: "Gemini 2.5 Flash",
   api: "openai-chat-completions",
-  baseUrl: "https://litellm.example.com",
+  baseUrl: "https://generativelanguage.googleapis.com/v1beta",
   reasoning: false,
   input: ["text"],
   cost: {
@@ -143,14 +143,14 @@ describe("parseQuickAnswerConfig", () => {
     const settings = {
       [CONFIG_KEY]: {
         systemPrompt: "Custom extraction prompt",
-        models: ["litellm/gemini-2.5-flash", "openai/gpt-4o-mini"],
+        models: ["google/gemini-2.5-flash", "openai/gpt-4o-mini"],
       },
     };
 
     const config = parseQuickAnswerConfig(settings);
     assert(config !== undefined);
     expect(config.systemPrompt).toBe("Custom extraction prompt");
-    expect(config.models).toEqual(["litellm/gemini-2.5-flash", "openai/gpt-4o-mini"]);
+    expect(config.models).toEqual(["google/gemini-2.5-flash", "openai/gpt-4o-mini"]);
   });
 
   it("parses single model string as an array", () => {
@@ -168,19 +168,19 @@ describe("parseQuickAnswerConfig", () => {
 
 describe("formatConfigReport", () => {
   it("formats report with resolved model and default prompt", () => {
-    const report = formatConfigReport(mockTheme, "litellm/gemini-2.5-flash", "default");
+    const report = formatConfigReport(mockTheme, "google/gemini-2.5-flash", "default");
     expect(report).toMatchInlineSnapshot(`
       "[@alexgorbatchev/pi-quick-answer]
-        model: litellm/gemini-2.5-flash
+        model: google/gemini-2.5-flash
         prompt: default"
     `);
   });
 
   it("formats report with resolved model and project settings prompt", () => {
-    const report = formatConfigReport(mockTheme, "litellm/gemini-2.5-flash", "project settings");
+    const report = formatConfigReport(mockTheme, "google/gemini-2.5-flash", "project settings");
     expect(report).toMatchInlineSnapshot(`
       "[@alexgorbatchev/pi-quick-answer]
-        model: litellm/gemini-2.5-flash
+        model: google/gemini-2.5-flash
         prompt: project settings"
     `);
   });
@@ -197,13 +197,13 @@ describe("formatConfigReport", () => {
 
 describe("matchesModelPattern", () => {
   it("matches exact provider and model id", () => {
-    expect(matchesModelPattern("litellm/gemini-2.5-flash", mockModelFlash)).toBe(true);
+    expect(matchesModelPattern("google/gemini-2.5-flash", mockModelFlash)).toBe(true);
     expect(matchesModelPattern("openai/gpt-4o-mini", mockModelGpt4oMini)).toBe(true);
     expect(matchesModelPattern("openai/gpt-4o-mini", mockModelFlash)).toBe(false);
   });
 
   it("matches wildcard provider or wildcard id", () => {
-    expect(matchesModelPattern("litellm/*", mockModelFlash)).toBe(true);
+    expect(matchesModelPattern("google/*", mockModelFlash)).toBe(true);
     expect(matchesModelPattern("*/gpt-4o-mini", mockModelGpt4oMini)).toBe(true);
     expect(matchesModelPattern("anthropic/*", mockModelGpt4oMini)).toBe(false);
   });
@@ -219,7 +219,7 @@ describe("matchesModelPattern", () => {
 describe("findMatchingModel", () => {
   it("finds the first matching model in order of configured patterns", () => {
     const available = [mockModelSonnet, mockModelGpt4oMini, mockModelFlash];
-    const match = findMatchingModel(["openai/*", "litellm/*"], available);
+    const match = findMatchingModel(["openai/*", "google/*"], available);
 
     assert(match !== undefined);
     expect(match.id).toBe("gpt-4o-mini");
@@ -227,7 +227,7 @@ describe("findMatchingModel", () => {
 
   it("returns undefined when no pattern matches", () => {
     const available = [mockModelSonnet];
-    const match = findMatchingModel(["litellm/*"], available);
+    const match = findMatchingModel(["mistral/*"], available);
 
     expect(match).toBeUndefined();
   });
@@ -247,7 +247,7 @@ describe("selectModel", () => {
     expect(selected.id).toBe("gpt-4o-mini");
   });
 
-  it("falls back to litellm flash when no configuration is provided", () => {
+  it("falls back to fast flash/mini/haiku model when no configuration is provided", () => {
     const mockCtx = {
       modelRegistry: {
         getAvailable: () => [mockModelSonnet, mockModelFlash],
@@ -262,7 +262,7 @@ describe("selectModel", () => {
 });
 
 describe("quickAnswerExtension", () => {
-  it("registers quick-answer and q commands", () => {
+  it("registers quick-answer command", () => {
     const registeredCommands: Record<string, string> = {};
     const registeredEvents: string[] = [];
 
@@ -280,7 +280,7 @@ describe("quickAnswerExtension", () => {
 
     quickAnswerExtension(mockPi);
 
-    expect(Object.keys(registeredCommands).sort()).toEqual(["q", "quick-answer"]);
+    expect(Object.keys(registeredCommands).sort()).toEqual(["quick-answer"]);
     expect(registeredEvents).toEqual(["context", "turn_start", "session_start"]);
   });
 

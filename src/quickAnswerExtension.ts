@@ -201,20 +201,14 @@ export function selectModel(ctx: ExtensionContext, configuredPatterns?: readonly
     }
   }
 
-  const litellmFlash = available.find(
+  const fastModel = available.find(
     (model: Model<Api>) =>
-      model.provider === "litellm" &&
-      (model.id.toLowerCase().includes("flash") ||
-        model.id.toLowerCase().includes("mini") ||
-        model.id.toLowerCase().includes("haiku")),
+      model.id.toLowerCase().includes("flash") ||
+      model.id.toLowerCase().includes("mini") ||
+      model.id.toLowerCase().includes("haiku"),
   );
-  if (litellmFlash) {
-    return litellmFlash;
-  }
-
-  const anyLitellm = available.find((model: Model<Api>) => model.provider === "litellm");
-  if (anyLitellm) {
-    return anyLitellm;
+  if (fastModel) {
+    return fastModel;
   }
 
   return ctx.model ?? available[0];
@@ -440,11 +434,6 @@ export default function quickAnswerExtension(pi: ExtensionAPI): void {
   const commandDescription = "Extract questions/options from last assistant message and select an answer";
 
   pi.registerCommand("quick-answer", {
-    description: commandDescription,
-    handler: commandHandler,
-  });
-
-  pi.registerCommand("q", {
     description: commandDescription,
     handler: commandHandler,
   });
