@@ -1,6 +1,6 @@
 {
   "name": "@alexgorbatchev/pi-quick-answer",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Pi extension to quickly extract questions, options, and decisions from the assistant's last response for prompt answering",
   "keywords": [
     "pi-package",
