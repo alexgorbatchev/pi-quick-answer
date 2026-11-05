@@ -1,4 +1,4 @@
-import type { Api, Model, UserMessage } from "@earendil-works/pi-ai";
+import type { Api, Model, TextContent, UserMessage } from "@earendil-works/pi-ai";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { SettingsManager } from "@earendil-works/pi-coding-agent";
 import { Text } from "@earendil-works/pi-tui";
@@ -14,11 +14,6 @@ export interface IQuickAnswerConfig {
 
 export interface IThemeFormatter {
   fg(color: string, text: string): string;
-}
-
-interface ITextContentPart {
-  type: "text";
-  text: string;
 }
 
 interface IQuestionCache {
@@ -41,7 +36,7 @@ Output format:
 - No markdown formatting or extra text.
 - Return [] if no questions or options exist.`;
 
-function isTextContentPart(part: unknown): part is ITextContentPart {
+function isTextContentPart(part: unknown): part is TextContent {
   return (
     typeof part === "object" &&
     part !== null &&
@@ -225,7 +220,7 @@ function getLastAssistantText(ctx: ExtensionContext): string | undefined {
           return message.content;
         }
         if (Array.isArray(message.content)) {
-          const textParts = message.content.filter(isTextContentPart).map((part: ITextContentPart) => part.text);
+          const textParts = message.content.filter(isTextContentPart).map((part: TextContent) => part.text);
           if (textParts.length > 0) {
             return textParts.join("\n");
           }
@@ -320,7 +315,7 @@ async function extractQuestionsFromText(
 
       const responseText = response.content
         .filter(isTextContentPart)
-        .map((part: ITextContentPart) => part.text)
+        .map((part: TextContent) => part.text)
         .join("")
         .trim();
 
@@ -399,7 +394,7 @@ export default function quickAnswerExtension(pi: ExtensionAPI): void {
         ? message.content
         : message.content
             .filter(isTextContentPart)
-            .map((part: ITextContentPart) => part.text)
+            .map((part: TextContent) => part.text)
             .join("\n");
 
     return new Text(text, 0, 0);

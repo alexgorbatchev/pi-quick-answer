@@ -1,6 +1,6 @@
 {
   "name": "@alexgorbatchev/pi-quick-answer",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Pi extension to quickly extract questions, options, and decisions from the assistant's last response for prompt answering",
   "keywords": [
     "pi-package",
@@ -20,32 +20,28 @@
   "author": "Alex Gorbatchev",
   "type": "module",
   "files": [
-    "src",
+    "src/index.ts",
+    "src/quickAnswerExtension.ts",
     "README.md",
     "LICENSE"
   ],
-  "scripts": {
-    "check": "bun --bun oxfmt --check . && bun --bun oxlint . && tsc --noEmit",
-    "fix": "bun --bun oxfmt --write .",
-    "test": "bun scripts/run-isolated-pi.ts bun test",
-    "test:local": "bun x pi -e ./src/index.ts \"Provide a 2-paragraph technical explanation of why we isolate Docker networks in Coolify and how multi-network containers can cause Traefik gateway timeouts. At the end of your response, present 3 concrete solutions and questions to me.\""
-  },
   "peerDependencies": {
-    "@earendil-works/pi-ai": "*",
-    "@earendil-works/pi-coding-agent": "*",
-    "@earendil-works/pi-tui": "*"
+    "@earendil-works/pi-ai": "^1.5.0",
+    "@earendil-works/pi-coding-agent": "^1.5.0",
+    "@earendil-works/pi-tui": "^1.5.0"
   },
   "devDependencies": {
-    "@alexgorbatchev/typescript-ai-policy": "^13.0.0",
-    "@earendil-works/pi-ai": "^0.85.1",
-    "@earendil-works/pi-coding-agent": "^0.85.1",
-    "@earendil-works/pi-tui": "^0.85.1",
-    "@types/bun": "^1.4.2",
-    "@types/node": "^22.20.2",
-    "@typescript/native": "npm:typescript@^7.0.2",
-    "oxfmt": "^0.67.0",
-    "oxlint": "^1.82.0",
-    "typescript": "^6.0.2"
+    "@alexgorbatchev/pi-test-isolation": "github:alexgorbatchev/pi-test-isolation#v1.0.0",
+    "@alexgorbatchev/typescript-ai-policy": "^14.0.3",
+    "@earendil-works/pi-coding-agent": "1.5.0",
+    "@earendil-works/pi-tui": "1.5.0",
+    "@types/bun": "^1.4.4",
+    "@types/node": "^26.6.6",
+    "oxfmt": "^0.76.0",
+    "oxlint": "^1.91.0",
+    "ts-unused": "^3.8.0",
+    "typescript": "^7.0.2",
+    "@earendil-works/pi-ai": "1.5.0"
   },
   "publishConfig": {
     "access": "public"
@@ -54,5 +50,9 @@
     "extensions": [
       "./src/index.ts"
     ]
+  },
+  "exports": "./src/index.ts",
+  "engines": {
+    "node": ">=22.19.0"
   }
 }

@@ -1,10 +1,9 @@
 import assert from "node:assert";
 import { describe, expect, it } from "bun:test";
 import type { Api, Model } from "@earendil-works/pi-ai";
-import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
-import quickAnswerExtension, {
+import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
+import {
   CONFIG_KEY,
-  DEFAULT_EXTRACTION_SYSTEM_PROMPT,
   fallbackRegexExtract,
   findMatchingModel,
   formatConfigReport,
@@ -14,10 +13,6 @@ import quickAnswerExtension, {
   parseQuickAnswerConfig,
   selectModel,
 } from "../quickAnswerExtension.js";
-
-interface IMockCommandOptions {
-  description: string;
-}
 
 const mockTheme: IThemeFormatter = {
   fg: (_color: string, text: string) => text,
@@ -258,48 +253,5 @@ describe("selectModel", () => {
     const selected = selectModel(mockCtx);
     assert(selected !== undefined);
     expect(selected.id).toBe("gemini-2.5-flash");
-  });
-});
-
-describe("quickAnswerExtension", () => {
-  it("registers quick-answer command", () => {
-    const registeredCommands: Record<string, string> = {};
-    const registeredEvents: string[] = [];
-
-    const mockPi = {
-      registerCommand: (name: string, options: IMockCommandOptions) => {
-        registeredCommands[name] = options.description;
-      },
-      registerMessageRenderer: () => {},
-      on: (event: string) => {
-        registeredEvents.push(event);
-      },
-      sendMessage: () => {},
-      sendUserMessage: () => {},
-    } as unknown as ExtensionAPI;
-
-    quickAnswerExtension(mockPi);
-
-    expect(Object.keys(registeredCommands).sort()).toEqual(["quick-answer"]);
-    expect(registeredEvents).toEqual(["context", "turn_start", "session_start"]);
-  });
-
-  it("exports the default extraction prompt", () => {
-    expect(DEFAULT_EXTRACTION_SYSTEM_PROMPT).toMatchInlineSnapshot(`
-      "You are an exact question and decision extractor.
-      Given an assistant's response from a conversation, extract any open questions, proposed options, or decisions presented to the user.
-
-      RULES:
-      1. Extract the EXACT question or option text as written by the assistant. Do NOT paraphrase, summarize, rephrase, or reword it into your own phrasing.
-      2. If the assistant asked "Question: Should we audit all multi-network compose configurations...?", extract the exact text "Should we audit all multi-network compose configurations...?".
-      3. If options are listed like "Option 1: Explicit Docker Network Label Pinning", extract the exact title/description.
-      4. Include both distinct options/solutions and trailing questions as separate items if they offer different choices.
-      5. Keep the original wording intact so the user and model recognize the exact context.
-
-      Output format:
-      - Return ONLY a JSON array of strings containing the exact phrases/questions: ["Exact question 1?", "Exact option or question 2?"]
-      - No markdown formatting or extra text.
-      - Return [] if no questions or options exist."
-    `);
   });
 });

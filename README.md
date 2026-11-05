@@ -60,15 +60,16 @@ Or if a custom prompt is configured:
   prompt: project settings
 ```
 
-## Development & Testing
+## Development
+
+Use Bun 1.4 or newer and `just`. The extension requires Pi 1.x (1.5 or newer) from `@earendil-works` and Node.js 22.19 or newer.
 
 ```bash
-# Run the tests in an isolated Pi environment (plain `bun test` refuses to run)
-bun run test
-
-# Run linter and typecheck
-bun run check
-
-# Launch interactive Pi session with the test prompt prefilled
-bun run test:local
+just setup
+just check
+just run
 ```
+
+`just run` opens Pi with the local extension and your real settings. `just test` uses the GitHub-pinned [pi-test-isolation](https://github.com/alexgorbatchev/pi-test-isolation) supervisor and guard to isolate home, caches, sessions, scratch, and child processes. Direct `bun test` is rejected outside isolation.
+
+Tests exercise the installed Pi loader, event runner, model provider, extraction cache, settings precedence, selection and editor flows, and report rendering. Linux and macOS CI enforce at least 90% line and function coverage, including unexecuted source. Tests and development tooling are excluded from the published package.
