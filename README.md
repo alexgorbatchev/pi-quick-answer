@@ -63,8 +63,8 @@ Or if a custom prompt is configured:
 ## Development & Testing
 
 ```bash
-# Run unit tests
-bun test
+# Run the tests in an isolated Pi environment (plain `bun test` refuses to run)
+bun run test
 
 # Run linter and typecheck
 bun run check
